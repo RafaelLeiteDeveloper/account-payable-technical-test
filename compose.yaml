@@ -12,6 +12,9 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://database:5432/accounts_payable
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: root
+      RABBITMQ_USERNAME: user_queue
+      RABBITMQ_PASSWORD: user_queue
+      RABBITMQ_ADDRESSES: rabbitmq:5672
       SPRING_RABBITMQ_HOST: rabbitmq
       SPRING_RABBITMQ_PORT: 5672
     ports:
