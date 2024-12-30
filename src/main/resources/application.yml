@@ -1,0 +1,47 @@
+server:
+  port: ${SERVER_PORT:8080}
+
+spring:
+  jpa:
+    open-in-view: false
+    hibernate:
+      show_sql: ${DB_JPA_SHOW_SQL:true}
+      ddl-auto: ${DB_DDL_AUTO:update}
+
+  datasource:
+    url: jdbc:postgresql://${DB_SERVER:localhost}:${DB_PORT:5432}/${DB_DATABASE:accounts_payable}
+    username: ${DB_USER:root}
+    password: ${DB_PASSWORD:root}
+    hikari:
+      schema: ${DB_SCHEMA:public}
+
+  flyway:
+    enabled: ${FLYWAY_ENABLED:true}
+    baseline-on-migrate: true
+
+  rabbitmq:
+    listener:
+      simple:
+        enabled: true
+    username: ${RABBITMQ_USERNAME:user_queue}
+    password: ${RABBITMQ_PASSWORD:user_queue}
+    addresses: ${RABBITMQ_ADDRESSES:localhost:5672}
+    template:
+      queues:
+        consumers:
+          order-queue: ${RABBITMQ_ORDER_CONSUMER:order_queue}
+
+management:
+  info:
+    env:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: ${ACTUATOR_EXPOSURE:health,info,shutdown}
+    enabled-by-default: ${ACTUATOR_ENABLED:true}
+  endpoint:
+    info:
+      enabled: true
+    health:
+      show-details: never
