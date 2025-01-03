@@ -1,13 +1,13 @@
 package com.desafio.account.payable.interfaces.exception;
 
-import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.coyote.BadRequestException;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -49,29 +49,12 @@ public class CustomExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
 
-    @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<Error> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpServletRequest s){
-
-        String message = ex.getMessage();
-        Throwable cause = ex.getCause();
-        message = this.isInvalidFormatException(cause, message);
-        log.error("method=handleHttpMessageNotReadableExceptions | Error message:{} ", message);
-
-        return Error.response(message, HttpStatus.BAD_REQUEST, s.getRequestURI());
-    }
-
     private String getErrorMessage(MethodArgumentNotValidException e) {
         return e.getBindingResult().getAllErrors().stream().map(error -> {
             String field = ((FieldError) error).getField();
             String errorMessage = error.getDefaultMessage();
             return field + " " + errorMessage;
         }).collect(Collectors.joining(", "));
-    }
-
-    private String isInvalidFormatException(Throwable cause, String message) {
-        return (cause instanceof InvalidFormatException) ?
-                String.format("Exceção de formato inválido: O campo contém um valor inválido: '%s'. Verifique se o valor está no formato correto.", ((InvalidFormatException) cause).getValue().toString()) :
-                message;
     }
 
 }

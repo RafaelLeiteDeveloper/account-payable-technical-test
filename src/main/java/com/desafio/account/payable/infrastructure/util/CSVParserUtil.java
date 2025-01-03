@@ -19,10 +19,18 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CSVParserUtil {
 
+    private static final String EXPECTED_HEADER = "dueDate,paymentDate,amount,description,status";
+
     private final QueueService queueServiceImpl;
+
     public List<AccountRequest> parseCSVToAccountRequests(InputStream inputStream, String processId) throws IOException {
         try (CSVReader reader = new CSVReader(new InputStreamReader(inputStream))) {
             List<String[]> rows = reader.readAll();
+
+            if (rows.isEmpty() || !String.join(",", rows.get(0)).equals(EXPECTED_HEADER)) {
+                throw new IllegalArgumentException("Invalid CSV header. Expected: " + EXPECTED_HEADER);
+            }
+
             return rows.stream().skip(1)
                     .map(row -> AccountRequest.builder()
                             .dueDate(parseLocalDateTime(row[0]))

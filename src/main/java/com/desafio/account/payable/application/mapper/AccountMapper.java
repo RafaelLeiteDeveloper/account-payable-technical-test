@@ -3,9 +3,10 @@ package com.desafio.account.payable.application.mapper;
 import com.desafio.account.payable.application.dto.request.AccountRequest;
 import com.desafio.account.payable.domain.model.AccountModel;
 import com.desafio.account.payable.application.dto.response.AccountResponse;
-import com.desafio.account.payable.infrastructure.util.MonetaryUtil;
+import com.desafio.account.payable.infrastructure.util.CurrencyFormatterUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+
 
 @Slf4j
 public class AccountMapper {
@@ -15,11 +16,11 @@ public class AccountMapper {
     public static AccountResponse toAccountResponse(AccountModel accountModel) {
         log.info("Starting the ModelMapper AccountModel: {}", accountModel.toString());
 
-        String formattedAmount = MonetaryUtil.formatToBrazilianCurrency(accountModel.getAmount());
+        String formattedAmount = CurrencyFormatterUtil.formatToBrazilianCurrency(accountModel.getAmount());
         AccountResponse accountResponse = modelMapper.map(accountModel, AccountResponse.class);
         accountResponse.setAmount(formattedAmount);
 
-        log.info("End the ModelMapper Model");
+        log.info("End the ModelMapper");
         return accountResponse;
     }
 
@@ -27,8 +28,9 @@ public class AccountMapper {
         log.info("Starting the ModelMapper AccountRequest: {}", accountRequest.toString());
 
         AccountModel accountModel = modelMapper.map(accountRequest, AccountModel.class);
+        accountModel.setId(null);
 
-        log.info("End the ModelMapper Request");
+        log.info("End the ModelMapper");
         return accountModel;
     }
 

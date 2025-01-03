@@ -24,5 +24,4 @@ public class FileUtil {
     public static InputStream convertByteArrayToInputStream(byte[] byteArray) {
         return new ByteArrayInputStream(byteArray);
     }
-
 }

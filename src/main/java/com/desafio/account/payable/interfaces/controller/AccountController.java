@@ -1,8 +1,9 @@
 package com.desafio.account.payable.interfaces.controller;
 
+
 import com.desafio.account.payable.application.dto.request.AccountRequest;
 import com.desafio.account.payable.application.dto.response.AccountResponse;
-import com.desafio.account.payable.application.dto.response.TotalPaidResponse;
+import com.desafio.account.payable.application.service.AccountImportService;
 import com.desafio.account.payable.application.service.AccountService;
 import com.desafio.account.payable.domain.model.AccountStatus;
 import com.desafio.account.payable.infrastructure.util.DateValidatorUtil;
@@ -15,16 +16,17 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.time.LocalDateTime;
 
 @Slf4j
 @RestController
-@RequiredArgsConstructor
-@SuppressWarnings("unused")
 @RequestMapping("/v1/account")
+@RequiredArgsConstructor
 public class AccountController {
 
     private final AccountService accountService;
+    private final AccountImportService accountImportService;
 
     @GetMapping("/{id}")
     public ResponseEntity<AccountResponse> getOrderById(@PathVariable("id") @Valid Long id){
@@ -35,7 +37,7 @@ public class AccountController {
     }
 
     @GetMapping("/totalPaid")
-    public ResponseEntity<TotalPaidResponse> getTotalPaid(
+    public ResponseEntity<String> getTotalPaid(
             @RequestParam("startDate") @NotBlank(message = "The 'startDate' parameter is required") String startDateStr,
             @RequestParam("endDate") @NotBlank(message = "The 'endDate' parameter is required") String endDateStr) {
 
@@ -44,11 +46,11 @@ public class AccountController {
         LocalDateTime startDate = DateValidatorUtil.validateDate(startDateStr);
         LocalDateTime endDate = DateValidatorUtil.validateDate(endDateStr);
 
-        String totalPaid = this.accountService.getTotalPaidInPeriod(startDate, endDate);
+        String totalPaid = accountService.getTotalPaidInPeriod(startDate, endDate);
 
         log.info("End the getTotalPaid in PaymentController from {} to {}", startDateStr, endDateStr);
 
-        return ResponseEntity.status(HttpStatus.OK).body(new TotalPaidResponse(totalPaid));
+        return ResponseEntity.status(HttpStatus.OK).body(totalPaid);
     }
 
     @GetMapping("/filter")
@@ -89,7 +91,7 @@ public class AccountController {
 
         log.info("Starting the updateAccount in PaymentController for ID: {}", id);
 
-        this.accountService.updateAccount(id, accountRequest);
+        accountService.updateAccount(id, accountRequest);
 
         log.info("End the updateAccount in PaymentController for ID: {}", id);
 
@@ -103,7 +105,7 @@ public class AccountController {
 
         log.info("Starting the updateAccountStatus in PaymentController for ID: {} with status: {}", id, status);
 
-        this.accountService.updateAccountStatus(id, status);
+        accountService.updateAccountStatus(id, status);
 
         log.info("End the updateAccountStatus in PaymentController for ID: {}", id);
 

@@ -14,5 +14,4 @@ public class DateValidatorUtil {
             throw new IllegalArgumentException("Invalid date format. Please use the format: yyyy-MM-dd'T'HH:mm:ss");
         }
     }
-
 }

@@ -1,8 +1,5 @@
 package com.desafio.account.payable.domain.model;
 
-import lombok.Getter;
-
-@Getter
 public enum AccountStatus {
     ACTIVE("ACTIVE"),
     INACTIVE("INACTIVE"),
@@ -16,6 +13,10 @@ public enum AccountStatus {
         this.status = status;
     }
 
+    public String getStatus() {
+        return status;
+    }
+
     public static boolean isValidStatus(String status) {
         for (AccountStatus accountStatus : AccountStatus.values()) {
             if (accountStatus.getStatus().equals(status)) {
@@ -24,5 +25,4 @@ public enum AccountStatus {
         }
         return false;
     }
-
 }

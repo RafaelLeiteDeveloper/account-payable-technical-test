@@ -34,5 +34,4 @@ public class AccountModel {
 
     @Column(nullable = false, length = 10)
     private String status;
-
 }

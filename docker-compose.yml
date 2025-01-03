@@ -1,3 +1,5 @@
+version: '3.9'
+
 services:
   app:
     image: spring-boot-java21-app:latest
@@ -6,15 +8,12 @@ services:
       context: .
       dockerfile: Dockerfile
     depends_on:
-      - database
+      - postgres
       - rabbitmq
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://database:5432/accounts_payable
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/accounts_payable
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: root
-      RABBITMQ_USERNAME: user_queue
-      RABBITMQ_PASSWORD: user_queue
-      RABBITMQ_ADDRESSES: rabbitmq:5672
       SPRING_RABBITMQ_HOST: rabbitmq
       SPRING_RABBITMQ_PORT: 5672
     ports:
@@ -22,9 +21,9 @@ services:
     networks:
       - account-payable-net
 
-  database:
+  postgres:
     image: postgres:latest
-    container_name: database
+    container_name: postgres_container
     restart: always
     environment:
       POSTGRES_USER: root
@@ -46,6 +45,9 @@ services:
     environment:
       RABBITMQ_DEFAULT_USER: user_queue
       RABBITMQ_DEFAULT_PASS: user_queue
+    volumes:
+      - ./docker/rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf:ro
+      - ./docker/rabbitmq/rabbitmq_definitions.json:/etc/rabbitmq/definitions.json:ro
     networks:
       - account-payable-net
 

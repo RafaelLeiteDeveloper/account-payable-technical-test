@@ -2,6 +2,7 @@ package com.desafio.account.payable.infrastructure.repository;
 
 import com.desafio.account.payable.domain.model.AccountModel;
 import org.springframework.data.jpa.domain.Specification;
+
 import java.time.LocalDateTime;
 
 public class AccountSpecification {
